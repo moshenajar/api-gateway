@@ -1,11 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { ClientProxy, ClientProxyFactory, Transport } from "@nestjs/microservices";
+import { LoginDto } from "./dtos/login.dto";
 
 
 
 
 @Injectable()
-export class MathService {
+export class IdentityService {
     private client: ClientProxy
     
     constructor() {
@@ -21,6 +22,12 @@ export class MathService {
     public SumNumbers(data: Array<number>) {
         return this.client.send<number>('sum', data)
     }
+
+    async signIn(loginDto: LoginDto) {
+        return this.client.send('login',loginDto);
+    } 
+
+    
 
 
 }

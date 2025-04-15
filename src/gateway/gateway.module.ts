@@ -1,28 +1,12 @@
 import { Module } from '@nestjs/common';
-import { GatewayController } from './gateway.controller';
-//import { AppService } from './app.service';
-import { ClientsModule, Transport } from '@nestjs/microservices';
-import { MathService } from 'src/math/math.service';
-import { ProductsService } from 'src/products/products.service';
+import { ProductsService } from 'src/services/products/products.service';
+import { IdentityService } from 'src/services/identity/identity.service';
+import { AuthController } from './auth.controller';
+import { ProductsController } from './products.controller';
 
 @Module({
-  imports: [
-    /*ClientsModule.register([
-      {
-        name: 'PRODUCT_MICROSERVICE',
-        transport: Transport.TCP,
-        options: {
-          host: '127.0.0.1',
-          port: 3001,
-        }
-      }
-    ])*/
-    /*ClientsModule.register([
-      { name: 'USER_SERVICE', transport: Transport.TCP },
-      { name: 'ORDER_SERVICE', transport: Transport.TCP },
-    ]),*/
-  ],
-  controllers: [GatewayController],
-  providers: [MathService, ProductsService],
+  imports: [],
+  controllers: [AuthController, ProductsController],
+  providers: [ProductsService,IdentityService],
 })
 export class GatewayModule {}
