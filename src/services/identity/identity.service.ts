@@ -1,6 +1,9 @@
 import { Injectable } from "@nestjs/common";
 import { ClientProxy, ClientProxyFactory, Transport } from "@nestjs/microservices";
 import { LoginDto } from "./dtos/login.dto";
+import { AuthCredentialsDto } from "./dtos/auth.credentials.dto";
+import { RefreshTokenDto } from "./dtos/refresh-tokens.dto";
+import { ChangePasswordDto } from "./dtos/change-password.dto";
 
 
 
@@ -24,10 +27,38 @@ export class IdentityService {
     }
 
     async signIn(loginDto: LoginDto) {
-        return this.client.send('login',loginDto);
+        return this.client.send('login', loginDto);
     } 
 
-    
+    async signUp(authCredentialsDto: AuthCredentialsDto) {
+        return this.client.send('signup', authCredentialsDto);
+    }
 
+    async refreshTokens(refreshTokenDto: RefreshTokenDto) {
+        return this.client.send('refreshTokens', refreshTokenDto.refreshToken);
+    }
+
+    async changePassword(
+        userId: any,
+        oldPassword: string,
+        newPassword: string,
+    ) {
+        return this.client.send('changePassword', {userId, oldPassword, newPassword});
+    }
+
+    async validateToken(
+        jwt: string
+    ){
+        try 
+        {
+            return this.client.send('validateToken', jwt);
+        } 
+    catch (e) 
+        {
+            //Logger.error(e.message);
+            return "moshe-identity.service-validationToken";
+        }
+       
+    }
 
 }
