@@ -6,7 +6,7 @@ import { RefreshTokenDto } from 'src/services/identity/dtos/refresh-tokens.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { ChangePasswordDto } from 'src/services/identity/dtos/change-password.dto';
 import { User } from 'src/guards/user.entity';
-import { GetUser } from 'src/guards/get-user.decorator';
+import { GetUserId } from 'src/guards/get-user.decorator';
 import { TokenDto } from 'src/services/identity/dtos/token.dto';
 
 @Controller('auth')
@@ -35,10 +35,6 @@ export class AuthController {
     return await this.identityService.validateToken(token.accessToken);
   }
 
-  @Post('validateAccessToken')//is not working
-  async validateAccessToken(@Body() accessToken: string) {
-      return this.identityService.validateToken(accessToken);
-  }
 
   @UseGuards(AuthGuard)
   @Post('test')
@@ -50,12 +46,11 @@ export class AuthController {
   @Post('change-password')
   async changePassword(
       @Body() changePasswordDto: ChangePasswordDto,
-      @GetUser() user: User
+      @GetUserId() userId: string
   ) {
       return this.identityService.changePassword(
-          user.id,
-          changePasswordDto.oldPassword,
-          changePasswordDto.newPassword,
+        userId,
+        changePasswordDto
       );
   }
 

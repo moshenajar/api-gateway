@@ -5,6 +5,8 @@ import { CanActivate, ExecutionContext, Injectable, UnauthorizedException,
     HttpStatus,} from '@nestjs/common';
 import { IdentityService } from 'src/services/identity/identity.service';
 import { HttpService } from 'src/services/http/http.service';
+import { validateHeaderValue } from 'http';
+import { ApiResponseDto } from 'src/utils/api-response';
 //import { AuthService } from './auth.service';
     
       
@@ -25,8 +27,17 @@ import { HttpService } from 'src/services/http/http.service';
             const authToken = authorization.replace(/bearer/gim, '').trim();
 
             const message: String = 'dddd';
-            const response = await this.httpService.post<string>('http://localhost:3000/gateway/auth/validateAccessToken',
-              authToken,
+
+            
+            let postBody = {
+              accessToken: authToken,
+            };
+
+            const response = await this.httpService.post<ApiResponseDto<string>>('http://localhost:3000/gateway/auth/validateToken',
+             
+              postBody
+              
+              ,
             /*{
               headers: {
                 'Authorization': 'Bearer ' + token,
@@ -41,9 +52,10 @@ import { HttpService } from 'src/services/http/http.service';
             //const { body }: any = request.body;
             
             //request.user = resp;
-            if(response.status = HttpStatus.UNAUTHORIZED)
+            if(response.status == HttpStatus.UNAUTHORIZED)
               return false
-            request.user = response.data;
+            
+            request.userId = response?.data?.data;
             return true;
           } catch (error) {
             console.log('auth error - ', error.message);

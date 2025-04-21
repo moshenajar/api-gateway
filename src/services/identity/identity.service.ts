@@ -1,9 +1,11 @@
-import { Injectable } from "@nestjs/common";
+import { HttpStatus, Injectable } from "@nestjs/common";
 import { ClientProxy, ClientProxyFactory, Transport } from "@nestjs/microservices";
 import { LoginDto } from "./dtos/login.dto";
 import { AuthCredentialsDto } from "./dtos/auth.credentials.dto";
 import { RefreshTokenDto } from "./dtos/refresh-tokens.dto";
 import { ChangePasswordDto } from "./dtos/change-password.dto";
+import { map, Observable } from "rxjs";
+import { ApiResponseDto } from "src/utils/api-response";
 
 
 
@@ -39,11 +41,10 @@ export class IdentityService {
     }
 
     async changePassword(
-        userId: any,
-        oldPassword: string,
-        newPassword: string,
+        userId: string,
+        changePasswordDto: ChangePasswordDto
     ) {
-        return this.client.send('changePassword', {userId, oldPassword, newPassword});
+        return this.client.send('changePassword', {userId, changePasswordDto});
     }
 
     async validateToken(
