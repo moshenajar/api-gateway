@@ -4,17 +4,18 @@ import { CanActivate, ExecutionContext, Injectable, UnauthorizedException,
     HttpCode,
     HttpStatus,} from '@nestjs/common';
 import { IdentityService } from 'src/services/identity/identity.service';
-import { HttpService } from 'src/services/http/http.service';
+//import { HttpService } from 'src/services/http/http.service';
 import { validateHeaderValue } from 'http';
 import { ApiResponseDto } from 'src/utils/api-response';
-//import { AuthService } from './auth.service';
+import { firstValueFrom, lastValueFrom } from 'rxjs';
+import { User } from './user.entity';
     
       
       @Injectable()
       export class AuthGuard implements CanActivate {
         constructor(
           private identityService : IdentityService,
-          @Inject('CustomHttpService') private readonly httpService: HttpService,
+          //@Inject('CustomHttpService') private readonly httpService: HttpService,
         ) {}
       
         async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -26,36 +27,26 @@ import { ApiResponseDto } from 'src/utils/api-response';
             }
             const authToken = authorization.replace(/bearer/gim, '').trim();
 
-            const message: String = 'dddd';
-
-            
-            let postBody = {
+            /*let postBody = {
               accessToken: authToken,
             };
 
-            const response = await this.httpService.post<ApiResponseDto<string>>('http://localhost:3000/gateway/auth/validateToken',
-             
+            const response = await this.httpService.post<ApiResponseDto<string>>(
+              'http://localhost:3000/gateway/auth/validateToken',
               postBody
-              
-              ,
-            /*{
-              headers: {
-                'Authorization': 'Bearer ' + token,
-              },
-            }*/
-            );
+            );*/
 
-           /* const resp = await this.identityService.validateToken(
-              //authToken
-              "eyJhbGciOi1JIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJjYTllOTVhOC1lOGRmLTQxNTctOWE3MC1lNGE0ZDIzYjkxZTgiLCJpYXQiOjE3NDQ3NDk3NjgsImV4cCI6MTc0NDc4NTc2OH0.Mu7J4Jh4EYyvOX0aNZ8i_jYIUPcqDDbxmKEUiGO9tyl"
-            ); */
-            //const { body }: any = request.body;
+            const validateTokenResponse:ApiResponseDto<User> = await firstValueFrom(await this.identityService.validateToken(authToken));
+            //console.log(validateTokenResponse);
             
-            //request.user = resp;
-            if(response.status == HttpStatus.UNAUTHORIZED)
+            /*const getUserByUserIdResponse:ApiResponseDto<User> = await firstValueFrom(await this.identityService.getUserByUserId("1"));
+            console.log(getUserByUserIdResponse);*/
+
+    
+            if(validateTokenResponse.statusCode == HttpStatus.UNAUTHORIZED)
               return false
             
-            request.userId = response?.data?.data;
+            request.user = validateTokenResponse.data;
             return true;
           } catch (error) {
             console.log('auth error - ', error.message);

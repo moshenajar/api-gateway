@@ -1,10 +1,10 @@
-import { IsEmail, IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import { IsString, Matches, MaxLength, MinLength } from 'class-validator';
 
-export class LoginDto {
-  
-    username: string;
+export class ResetPasswordDto {
+  @IsString()
+  resetToken: string;
 
-    @IsString()
+  @IsString()
     @MinLength(8)
     @MaxLength(32)
 
@@ -17,5 +17,5 @@ export class LoginDto {
     @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, { 
         message: 'password is too weak' 
     })
-    password: string;
+    newPassword: string;
 }
