@@ -18,6 +18,6 @@ import configuration from '../config/configuration';
     }),
   ],
   controllers: [AuthController, ProductsController],
-  providers: [ProductsService,IdentityService],
+  providers: [ProductsService, IdentityService],
 })
-export class GatewayModule {}
+export class GatewayModule { }

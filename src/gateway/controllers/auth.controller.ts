@@ -11,34 +11,39 @@ import { ForgotPasswordDto } from 'src/services/identity/dtos/forgot-password.dt
 import { GetOtp } from 'src/guards/get-otp.decorator';
 import { ForgotPasswordOtpDto } from 'src/services/identity/dtos/forgot-password-otp.dto';
 import { ResetPasswordDto } from 'src/services/identity/dtos/reset-password.dto';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { AuthRefreshTokenGuard } from 'src/guards/auth.refreshtoken.guard';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(
-    private identityService : IdentityService,
+    private identityService: IdentityService,
   ) { }
 
   @Post('login')
+  @ApiBody({ type: LoginDto })
   async login(@Body() loginDto: LoginDto) {
     return this.identityService.signIn(loginDto)
   }
 
   @Post('signup')
-  async signUp(authCredentialsDto: AuthCredentialsDto) {
-      return this.identityService.signUp(authCredentialsDto);
+  @ApiBody({ type: AuthCredentialsDto })
+  async signUp(@Body() authCredentialsDto: AuthCredentialsDto) {
+    return this.identityService.signUp(authCredentialsDto);
   }
 
-  
+  @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard)
   @Post('changePassword')
   async changePassword(
-      @Body() changePasswordDto: ChangePasswordDto,
-      @GetUser() user: User
+    @Body() changePasswordDto: ChangePasswordDto,
+    @GetUser() user: User
   ) {
-      return this.identityService.changePassword(
-        user.userId,
-        changePasswordDto
-      );
+    return this.identityService.changePassword(
+      user.userId,
+      changePasswordDto
+    );
   }
 
 
@@ -75,6 +80,7 @@ export class AuthController {
   *   otp
   * response:
   * */
+  @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard)
   @Post('forgotPassword')
   async forgotPassword(
@@ -85,21 +91,45 @@ export class AuthController {
 
     forgotPasswordDto.userId = user.userId;
     forgotPasswordDto.originalOtp = originalOtp;
-      return this.identityService.forgotPassword(forgotPasswordDto);
+    return this.identityService.forgotPassword(forgotPasswordDto);
   }
 
+  @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard)
   @Post('resetPassword')
-    async resetPassword(
-        @Body() resetPasswordDto: ResetPasswordDto,
-    ) {
-        return this.identityService.resetPassword(resetPasswordDto);
-    }
+  async resetPassword(
+    @Body() resetPasswordDto: ResetPasswordDto,
+  ) {
+    return this.identityService.resetPassword(resetPasswordDto);
+  }
 
 
+  /*
+
+1. Token Expiry
+- Verify that the refresh token has not expired.
+- If expired, prompt the user to reauthenticate.
+2. Token Revocation
+- Check if the token has been revoked (e.g., user logged out or changed credentials).
+- Maintain a blacklist or database flag for revoked tokens.
+3. Token Integrity
+- Ensure the UUID is correctly formatted and matches the stored value.
+- If using a hashed UUID, verify it against the stored hash.
+4. User Association
+- Confirm the token is linked to the correct user.
+- Prevent token reuse across different accounts.
+5. Secure Storage
+- Ensure the token is stored securely (e.g., httpOnly cookies or encrypted database).
+- Avoid exposing it in client-side storage like localStorage.
+6. Rate Limiting
+- Implement rate limits to prevent abuse (e.g., multiple refresh attempts in a short time).
+
+  */
+  @ApiBearerAuth('access-token')
+  @UseGuards(AuthRefreshTokenGuard)
   @Post('refreshToken')
   async refreshToken(refreshTokenDto: RefreshTokenDto) {
-      return this.identityService.refreshToken(refreshTokenDto);
+    return this.identityService.refreshToken(refreshTokenDto);
   }
 
   /*@Post('validateToken')
@@ -107,11 +137,12 @@ export class AuthController {
     return await this.identityService.validateToken(token.accessToken);
   }*/
 
+  @ApiBearerAuth('access-token')
   @UseGuards(AuthGuard)
   @Post('test')
   async test(
     @GetUser() user: User,
-  ){
-   console.log(user);
+  ) {
+    console.log(user);
   }
 }

@@ -17,6 +17,16 @@ async function bootstrap() {
     .setDescription('The products API description')
     .setVersion('1.0')
     .addTag('gateway')
+    .addBearerAuth(
+      {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        name: 'Autorization',
+        in: 'header'
+      },
+      'access-token', // This name is use in ther @ApiBearerAuth() decorator
+    )
     .build();
 
   const options: SwaggerDocumentOptions =  {

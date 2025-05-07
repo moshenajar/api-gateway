@@ -18,7 +18,7 @@ import { UtilsService } from "src/utils/utils-service.ts";
 @Injectable()
 export class IdentityService {
     private client: ClientProxy
-    
+
     constructor() {
         this.client = ClientProxyFactory.create({
             transport: Transport.TCP,
@@ -35,7 +35,7 @@ export class IdentityService {
 
     async signIn(loginDto: LoginDto) {
         return this.client.send('login', loginDto);
-    } 
+    }
 
     async signUp(authCredentialsDto: AuthCredentialsDto) {
         return this.client.send('signup', authCredentialsDto);
@@ -49,62 +49,60 @@ export class IdentityService {
         userId: string,
         changePasswordDto: ChangePasswordDto
     ) {
-        return this.client.send('changePassword', {userId, changePasswordDto});
+        return this.client.send('changePassword', { userId, changePasswordDto });
     }
 
     async validateToken(
         jwt: string
-    ){
-        try 
-        {
+    ) {
+        try {
             return this.client.send('validateToken', jwt);
-        } 
-    catch (e) 
-        {
+        }
+        catch (e) {
             //Logger.error(e.message);
             //return "moshe-identity.service-validationToken";
         }
-       
+
     }
 
-    async forgotPasswordOtp(forgotPasswordOtpDto: ForgotPasswordOtpDto){
-        return this.client.send('forgotPasswordOtp', {forgotPasswordOtpDto});
+    async forgotPasswordOtp(forgotPasswordOtpDto: ForgotPasswordOtpDto) {
+        return this.client.send('forgotPasswordOtp', { forgotPasswordOtpDto });
     }
 
-    async forgotPassword(forgotPasswordDto: ForgotPasswordDto){
-            return this.client.send('forgotPassword', {forgotPasswordDto});
+    async forgotPassword(forgotPasswordDto: ForgotPasswordDto) {
+        return this.client.send('forgotPassword', { forgotPasswordDto });
     }
 
-    async resetPassword(resetPasswordDto: ResetPasswordDto){
-        return this.client.send('resetPassword', {resetPasswordDto});
+    async resetPassword(resetPasswordDto: ResetPasswordDto) {
+        return this.client.send('resetPassword', { resetPasswordDto });
     }
 
-    async getUserByUserId(userId: string){
-        return this.client.send('getUserByUserId', {userId});
+    async getUserByUserId(userId: string) {
+        return this.client.send('getUserByUserId', { userId });
     }
-       /* const tmpUser = this.client.send('getUserByUserId', {userId}).subscribe({
-            next: (response) => {return of(response)},// console.log('Response:', response),
-            error: (err) => console.error('Error:', err),
-            complete: () => console.log('Completed'),
-          });;
-        let user: User = null;
-        if(tmpUser)
-        {
-           
-        }*/
-        /*const user: User = {
-            userId: '1',
-            username: 'John Doe',
-            password: 'john.doe@example.com',
-          };
-          
-          return of(user); // Creates an Observable that emits the User object
-       /* this.client.send('getUserByUserId', {userId})
-        .subscribe({
-            next: (response) => console.log('Response:', response),
-            error: (err) => console.error('Error:', err),
-            complete: () => console.log('Completed'),
-          });;*/
+    /* const tmpUser = this.client.send('getUserByUserId', {userId}).subscribe({
+         next: (response) => {return of(response)},// console.log('Response:', response),
+         error: (err) => console.error('Error:', err),
+         complete: () => console.log('Completed'),
+       });;
+     let user: User = null;
+     if(tmpUser)
+     {
+        
+     }*/
+    /*const user: User = {
+        userId: '1',
+        username: 'John Doe',
+        password: 'john.doe@example.com',
+      };
+      
+      return of(user); // Creates an Observable that emits the User object
+   /* this.client.send('getUserByUserId', {userId})
+    .subscribe({
+        next: (response) => console.log('Response:', response),
+        error: (err) => console.error('Error:', err),
+        complete: () => console.log('Completed'),
+      });;*/
     //}
 
     /*async test(hi: string){

@@ -1,7 +1,10 @@
-import { IsEmail, IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsEmail, IsNotEmpty, IsString, Matches, MaxLength, MinLength } from 'class-validator';
 
 export class LoginDto {
-  
+    @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
     username: string;
 
     @IsString()
@@ -14,8 +17,10 @@ export class LoginDto {
     Passwords will contain at least 1 number or special character
     There is no length validation (min, max) in this regex!
     */
-    @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, { 
-        message: 'password is too weak' 
+    @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
+        message: 'password is too weak'
     })
+    @ApiProperty()
+    @IsNotEmpty()
     password: string;
 }
