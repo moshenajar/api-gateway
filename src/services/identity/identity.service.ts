@@ -41,8 +41,8 @@ export class IdentityService {
         return this.client.send('signup', authCredentialsDto);
     }
 
-    async refreshToken(refreshTokenDto: RefreshTokenDto) {
-        return this.client.send('refreshToken', refreshTokenDto.refreshToken);
+    async refreshToken(user: User) {
+        return this.client.send('refreshToken', user);
     }
 
     async changePassword(
@@ -57,6 +57,19 @@ export class IdentityService {
     ) {
         try {
             return this.client.send('validateToken', jwt);
+        }
+        catch (e) {
+            //Logger.error(e.message);
+            //return "moshe-identity.service-validationToken";
+        }
+
+    }
+
+    async validateRefreshToken(
+        jwt: string
+    ) {
+        try {
+            return this.client.send('validateRefreshToken', jwt);
         }
         catch (e) {
             //Logger.error(e.message);

@@ -128,8 +128,11 @@ export class AuthController {
   @ApiBearerAuth('access-token')
   @UseGuards(AuthRefreshTokenGuard)
   @Post('refreshToken')
-  async refreshToken(refreshTokenDto: RefreshTokenDto) {
-    return this.identityService.refreshToken(refreshTokenDto);
+  async refreshToken(
+    refreshTokenDto: RefreshTokenDto,
+    @GetUser() user: User,
+  ) {
+    return this.identityService.refreshToken(user);
   }
 
   /*@Post('validateToken')

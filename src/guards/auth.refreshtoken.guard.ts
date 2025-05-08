@@ -27,20 +27,7 @@ import { User } from './user.entity';
             }
             const authToken = authorization.replace(/bearer/gim, '').trim();
 
-            /*let postBody = {
-              accessToken: authToken,
-            };
-
-            const response = await this.httpService.post<ApiResponseDto<string>>(
-              'http://localhost:3000/gateway/auth/validateToken',
-              postBody
-            );*/
-
-            const validateTokenResponse:ApiResponseDto<User> = await firstValueFrom(await this.identityService.validateToken(authToken));
-            //console.log(validateTokenResponse);
-            
-            /*const getUserByUserIdResponse:ApiResponseDto<User> = await firstValueFrom(await this.identityService.getUserByUserId("1"));
-            console.log(getUserByUserIdResponse);*/
+            const validateTokenResponse:ApiResponseDto<User> = await firstValueFrom(await this.identityService.validateRefreshToken(authToken));
 
     
             if(validateTokenResponse.statusCode == HttpStatus.UNAUTHORIZED)
